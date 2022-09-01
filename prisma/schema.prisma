@@ -1,0 +1,128 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Game {
+  id         Int      @id @default(autoincrement())
+  time       String
+  white      User     @relation(name: "white", fields: [whiteName], references: [name])
+  whiteName  String
+  whiteScore Int      @default(0)
+  black      User     @relation(name: "black", fields: [blackName], references: [name])
+  blackName  String
+  blackScore Int      @default(0)
+  board      Board    @relation(fields: [boardId], references: [id])
+  boardId    Int
+  createdAt  DateTime @default(now())
+
+}
+
+model Board {
+  id    Int       @id @default(autoincrement())
+  games Game[]
+  a1    PieceType @default(WHITE_ROOK)
+  a2    PieceType @default(WHITE_PAWN)
+  a3    PieceType @default(NONE)
+  a4    PieceType @default(NONE)
+  a5    PieceType @default(NONE)
+  a6    PieceType @default(NONE)
+  a7    PieceType @default(BLACK_PAWN)
+  a8    PieceType @default(BLACK_ROOK)
+  b1    PieceType @default(WHITE_KNIGHT)
+  b2    PieceType @default(WHITE_PAWN)
+  b3    PieceType @default(NONE)
+  b4    PieceType @default(NONE)
+  b5    PieceType @default(NONE)
+  b6    PieceType @default(NONE)
+  b7    PieceType @default(BLACK_PAWN)
+  b8    PieceType @default(BLACK_KNIGHT)
+  c1    PieceType @default(WHITE_BISHOP)
+  c2    PieceType @default(WHITE_PAWN)
+  c3    PieceType @default(NONE)
+  c4    PieceType @default(NONE)
+  c5    PieceType @default(NONE)
+  c6    PieceType @default(NONE)
+  c7    PieceType @default(BLACK_PAWN)
+  c8    PieceType @default(BLACK_BISHOP)
+  d1    PieceType @default(WHITE_QUEEN)
+  d2    PieceType @default(WHITE_PAWN)
+  d3    PieceType @default(NONE)
+  d4    PieceType @default(NONE)
+  d5    PieceType @default(NONE)
+  d6    PieceType @default(NONE)
+  d7    PieceType @default(BLACK_PAWN)
+  d8    PieceType @default(BLACK_QUEEN)
+  e1    PieceType @default(WHITE_KING)
+  e2    PieceType @default(WHITE_PAWN)
+  e3    PieceType @default(NONE)
+  e4    PieceType @default(NONE)
+  e5    PieceType @default(NONE)
+  e6    PieceType @default(NONE)
+  e7    PieceType @default(BLACK_PAWN)
+  e8    PieceType @default(BLACK_KING)
+  f1    PieceType @default(WHITE_BISHOP)
+  f2    PieceType @default(WHITE_PAWN)
+  f3    PieceType @default(NONE)
+  f4    PieceType @default(NONE)
+  f5    PieceType @default(NONE)
+  f6    PieceType @default(NONE)
+  f7    PieceType @default(BLACK_PAWN)
+  f8    PieceType @default(BLACK_BISHOP)
+  g1    PieceType @default(WHITE_KNIGHT)
+  g2    PieceType @default(WHITE_PAWN)
+  g3    PieceType @default(NONE)
+  g4    PieceType @default(NONE)
+  g5    PieceType @default(NONE)
+  g6    PieceType @default(NONE)
+  g7    PieceType @default(BLACK_PAWN)
+  g8    PieceType @default(BLACK_KNIGHT)
+  h1    PieceType @default(WHITE_ROOK)
+  h2    PieceType @default(WHITE_PAWN)
+  h3    PieceType @default(NONE)
+  h4    PieceType @default(NONE)
+  h5    PieceType @default(NONE)
+  h6    PieceType @default(NONE)
+  h7    PieceType @default(BLACK_PAWN)
+  h8    PieceType @default(BLACK_ROOK)
+}
+
+enum    PieceType {
+  NONE
+  WHITE_PAWN
+  WHITE_KNIGHT
+  WHITE_BISHOP
+  WHITE_ROOK
+  WHITE_QUEEN
+  WHITE_KING
+  BLACK_PAWN
+  BLACK_KNIGHT
+  BLACK_BISHOP
+  BLACK_ROOK
+  BLACK_QUEEN
+  BLACK_KING
+}
+
+model User {
+  id            String         @id @unique @default(uuid())
+  name          String         @unique
+  password      String
+  createdAt     DateTime       @default(now())
+  refreshTokens RefreshToken[]
+  whiteGames    Game[]         @relation(name: "white")
+  blackGames    Game[]         @relation(name: "black")
+}
+
+model RefreshToken {
+  id          String @id @default(uuid())
+  hashedToken String
+  userId      String
+  User        User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
